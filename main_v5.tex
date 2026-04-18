@@ -49,7 +49,7 @@ A key distinction separates this prior work from our approach. Existing agent si
 
 Second, digital phenotyping---the continuous measurement of behavior through smartphones and wearable sensors---has produced rich longitudinal records of how individuals communicate in daily life. Screenomics, which captures smartphone screenshots at five-second intervals \citep{reeves2021screenomics}, provides near-complete records of text messages sent and received. When combined with ecological momentary assessment (EMA) of suicidal ideation, these data reveal moment-to-moment relationships between digital communication and suicide risk \citep{ammerman2026beyond}. However, analyzing raw message content for suicide risk faces fundamental limitations: most messages are logistical and routine, risk-relevant content is sparse and diluted, and direct surveillance of private messages raises profound ethical concerns.
 
-We propose a novel approach that bridges these two developments: training per-person language model agents on individuals' actual text messages and then placing those agents in simulated social interactions to surface latent communication patterns associated with suicidal vulnerability (Figure~\ref{fig:paradigm}). The key insight is that a language model fine-tuned on someone's messages learns not the content of any specific conversation but the probability distribution over how that person communicates---their word choices, emotional expression patterns, relational tendencies, and cognitive style. We conceptualize this as a \textit{communicative stress test}---analogous to cardiac stress testing, where a resting ECG may appear normal but underlying vulnerability becomes visible under exertion. In our paradigm, routine text messages are the resting state, and the simulated conversation is the treadmill.
+We propose a novel approach that bridges these two developments: training per-person language model agents on individuals' actual text messages and then placing those agents in simulated social interactions to surface latent communication patterns associated with suicidal vulnerability (Figure~\ref{fig:paradigm}). The key insight is that a language model fine-tuned on someone's messages learns not just the content of any specific conversation but the probability distribution over how that person communicates---their word choices, emotional expression patterns, relational tendencies, and cognitive style. We conceptualize this as a \textit{communicative stress test}---analogous to cardiac stress testing, where a resting ECG may appear normal but underlying vulnerability becomes visible under exertion. In our paradigm, routine text messages are the resting state, and the simulated conversation is the treadmill.
 
 \begin{figure*}[t]
     \centering
@@ -99,7 +99,7 @@ Every possible pair of agents ($N = 2{,}485$ pairs from 71 agents) engaged in a 
 
 \subsubsection{Paradigm 2: Caption-Trained Arena}
 
-To test whether the predictive signal originates specifically from interpersonal communication style, we conducted a comparison using an alternative training corpus. For each participant, the Qwen2.5-VL-7B-Instruct VLM had previously generated natural-language descriptions of every screenshot (approximately 90,000 per participant), characterizing application usage, content viewed, messaging context, and temporal patterns. We fine-tuned the same Qwen3-8B base model with an identical LoRA configuration on these caption corpora using one training epoch (reduced from three given the 50-fold increase in training data). Sixty-seven participants yielded successful caption-trained adapters. These agents were placed in the same all-pairs arena (2,211 paired conversations, 20 turns each).
+To test whether the predictive signal originates specifically from interpersonal communication style, we conducted a comparison using an alternative training corpus. For each participant, the Qwen2.5-VL-7B-Instruct VLM had previously generated natural-language descriptions of every screenshot (approximately 93K per participant), characterizing application usage, content viewed, messaging context, and temporal patterns. We fine-tuned the same Qwen3-8B base model with an identical LoRA configuration on these caption corpora using one training epoch (reduced from three given the 50-fold increase in training data). Sixty-seven participants yielded successful caption-trained adapters. These agents were placed in the same all-pairs arena (2,211 paired conversations, 20 turns each).
 
 \subsubsection{Paradigm 3: Standardized Probe Arena}
 
@@ -133,7 +133,7 @@ To test whether the clinical signal is person-specific---that is, whether it res
 
 \subsubsection{Temporal Split Validation}
 
-To test whether adapters capture stable communicative dispositions rather than transient states, we chronologically split each participant's messages at the median timestamp, trained separate LoRA adapters on the first and second halves, and ran the full 5-probe battery with each set of adapters independently. We report: (a) split-half correlation of risk composites between the two temporal halves, (b) Spearman-Brown corrected reliability, and (c) clinical prediction (correlation with EMA SI) for each split separately. Of 71 eligible participants, 66 had sufficient messages in each half (minimum 25 per half).
+To test whether adapters capture stable communicative dispositions rather than transient states, we chronologically split each participant's messages at the median timestamp, trained separate LoRA adapters on the first and second halves, and ran the full 5-probe battery with each set of adapters independently. We report: (a) split-half correlation of risk composites between the two temporal halves, (b) Spearman-Brown corrected reliability, and (c) correlation with EMA SI for each split separately. Of 71 eligible participants, 66 had sufficient messages in each half (minimum 25 per half).
 
 \subsubsection{Cross-Validated Prediction}
 
@@ -164,7 +164,7 @@ All primary analyses were between-person, correlating each participant's arena-d
 
 \subsection{All-Pairs Arena}
 
-\subsubsection{Descriptives}
+\subsubsection{Descriptive Statistics}
 
 The 71 agents produced 2,485 paired conversations (49,700 total turns) with 0\% echo rate. Of the 71 agents, 26 (37\%) spontaneously mentioned suicide at least once. After matching with EMA data, 64 participants constituted the analytic sample.
 
@@ -190,7 +190,7 @@ The caption-trained arena yielded no significant associations with SI. The risk 
 
 \subsection{Standardized Probe Arena}
 
-\subsubsection{Descriptives}
+\subsubsection{Descriptive Statistics}
 
 The 71 participant agents engaged in 355 conversations (5 probes each, 20 turns). Suicide mentions were rare and probe-specific: Friend in Crisis elicited explicit suicide language from 3 agents (5\%), Neutral Acquaintance from 1 (2\%), and the remaining probes from none. Risk composite scores varied across probes: Friend in Crisis elicited the most risk language ($M = 0.52$, $SD = 0.59$), followed by Demanding Authority ($M = 0.45$, $SD = 0.54$), Supportive Therapist ($M = 0.39$, $SD = 0.58$), Neutral Acquaintance ($M = 0.35$, $SD = 0.52$), and Rejecting Peer ($M = 0.33$, $SD = 0.43$). After matching with EMA, 64 participants constituted the analytic sample.
 
