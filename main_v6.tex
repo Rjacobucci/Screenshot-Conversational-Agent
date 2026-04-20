@@ -70,7 +70,7 @@ Participants were 79 adults (ages 18--65) recruited from the community who endor
 
 \subsection{Message Extraction}
 
-Text messages were extracted from screenshots using a vision-language model (VLM) pipeline. The Qwen2.5-VL-7B-Instruct model \citep{qwen2025qwen3} was deployed on NVIDIA L40S GPUs (48 GB VRAM) using bfloat16 precision with a maximum input resolution of 1280 pixels. Each screenshot was processed in two stages using structured prompts (see Appendix~\ref{app:vlm_prompts} for full prompt text). In the first stage, the VLM received a screenshot and was prompted to determine whether a keyboard was visible, indicating an active messaging context. In the second stage---triggered only when a keyboard was detected---the VLM was prompted to extract message text separately for the phone owner (typically displayed in right-aligned dialogue boxes) and the message recipient (typically left-aligned), outputting a structured JSON response with fields for owner text, recipient text, and application name. Generation parameters were: temperature $= 0.1$, top-$p = 0.9$, maximum 512 new tokens, with repetition penalty $= 1.1$. Validation against 500 human-annotated screenshots demonstrated 99.7\% accuracy for keyboard detection, and when keyboards were present, 100\% accuracy for text extraction from both owner and recipient messages. This pipeline produced two text streams per participant---\textit{owner text} (messages sent by the participant) and \textit{recipient text} (messages received).
+Text messages were extracted from screenshots using a vision-language model (VLM) pipeline. The Qwen2.5-VL model \citep{qwen2025qwen3} was deployed on NVIDIA L40S GPUs (48 GB VRAM). Each screenshot was resized to $400 \times 672$ pixels and processed with a single structured prompt containing eight questions (see Appendix~\ref{app:vlm_prompts} for full prompt text). The prompt asked the VLM to identify the application being displayed, the type of activity, whether notifications were present, the nature of social media engagement, whether a keyboard was visible, and---if a keyboard was present in a messaging app---to extract text separately for the phone owner (typically right-aligned dialogue boxes) and the message recipient (typically left-aligned). Generation used a maximum of 600 new tokens. Validation against 500 human-annotated screenshots demonstrated 99.7\% accuracy for keyboard detection, and when keyboards were present, 100\% accuracy for text extraction from both owner and recipient messages. This pipeline produced two text streams per participant---\textit{owner text} (messages sent by the participant) and \textit{recipient text} (messages received).
 
 \subsection{EMA Measures}
 
@@ -620,17 +620,27 @@ Zhao, X., et~al. (2025).
 
 \appendix
 
-\section{VLM Message Extraction Prompts}\label{app:vlm_prompts}
+\section{VLM Message Extraction Prompt}\label{app:vlm_prompts}
 
-\subsection{Stage 1: Keyboard Detection}
+Each screenshot was processed with the following 8-question structured prompt. Images were resized to $400 \times 672$ pixels before input. The VLM generated up to 600 tokens in response.
 
-``Examine this smartphone screenshot carefully. Is there a keyboard visible on the screen? Answer with ONLY `yes' or `no'.''
+``Analyze this smartphone screenshot and answer in English, numbering each response 1--8:
 
-\subsection{Stage 2: Message Extraction}
+1. What app is being displayed? Choose one: [e.g., home screen, notification center, settings, lock screen, other (specify)].
 
-``You are analyzing a smartphone screenshot that shows a messaging conversation with a keyboard visible. Extract the text messages shown on screen. Identify which messages were sent by the phone owner (typically right-aligned, often in colored bubbles) and which were received from the other person (typically left-aligned, often in gray or white bubbles). Return a JSON object with the following fields: \{`owner\_text': `text sent by phone owner', `recipient\_text': `text from the other person', `app\_name': `name of messaging app if identifiable'\}. If no text is visible for a field, use an empty string. Extract only the actual message content, not UI elements, timestamps, or contact names.''
+2. What type of activity is happening (messaging, video, social media, system notifications, navigation, etc.)?
 
-%% NOTE FOR ROSS: Please verify these prompts match the actual prompts used in the VLM pipeline. If different prompts were used, replace these with the exact versions.
+3. Are notifications present? Answer `Yes' or `No'.
+
+4. If social media is being used, is the participant actively engaging (posting, commenting, messaging) or passively consuming (scrolling, viewing)?
+
+5. Is a keyboard present in this screenshot? Answer `Yes' or `No'.
+
+6. If and ONLY if a keyboard is present AND this is a messaging app, analyze the messaging text above the keyboard, paying attention to the color of the dialogue boxes.
+
+7. If and ONLY if this is a messaging app, provide text produced by the phone owner (typically in the dialogue box or traditionally oriented to the right of the screen): [Provide this text].
+
+8. If and ONLY if this is a messaging app, provide text produced by the person messaging the phone owner (typically oriented to the left of the screen): [Provide this text].''
 
 \subsection{Caption Generation Prompt (Paradigm 2)}\label{app:caption_prompt}
 
