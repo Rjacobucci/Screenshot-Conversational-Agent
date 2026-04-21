@@ -87,7 +87,14 @@ We used Qwen3-8B \citep{qwen2025qwen3} as the base language model. For each part
 
 \subsection{Arena Paradigms}
 
-We evaluated three conversational paradigms of increasing structure, each using the same per-person LoRA adapters and identical generation parameters (temperature $= 0.9$, top-$p = 0.95$, repetition penalty $= 1.3$, maximum 200 new tokens per turn). All conversations were scored using the same two-layer dictionary system described below.
+We evaluated three conversational paradigms of increasing structure, each using the same per-person LoRA adapters and identical generation parameters (temperature $= 0.9$, top-$p = 0.95$, repetition penalty $= 1.3$, maximum 200 new tokens per turn). All conversations were scored using the same two-layer dictionary system described below. Figure~\ref{fig:worked_example} illustrates the complete pipeline with a worked example: a conversation excerpt between one participant's agent and the Neutral Acquaintance probe, the dictionary scoring of agent turns, and the aggregation from turn-level hits to person-level clinical association.
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/fig10_worked_example.pdf}
+    \caption{Worked example of the communicative stress test pipeline. (a) An excerpt from a real conversation between a participant agent (SI $= 2.92$) and the Neutral Acquaintance probe. Risk-relevant language emerges naturally in casual small talk. (b) Dictionary scoring of agent turns, with hits color-coded by category. (c) Aggregation from turn-level hits to conversation composite, person-level score, and clinical association.}
+    \label{fig:worked_example}
+\end{figure*}
 
 \subsubsection{Paradigm 1: All-Pairs Arena}
 
