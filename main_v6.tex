@@ -50,12 +50,12 @@ The present study bridges digital phenotyping and generative agent simulation by
 
 This approach is novel relative to the existing agent simulation literature in a fundamental way. Prior methods rely on \textit{prompt-based conditioning}---providing demographic descriptions \citep{argyle2023silicon}, interview transcripts \citep{park2024generative}, or expert-designed persona specifications \citep{louie2024roleplay}---to shape model behavior. This faces an individuation problem: \citet{peng2025funhouse} found that digital twins created through prompting correlate with real human responses at only $r = 0.20$, and \citet{li2025behaviorchain} demonstrated that even state-of-the-art models struggle to maintain behavioral consistency. Our approach differs by \textit{fine-tuning} per-person adapters on actual behavioral data, learning directly from how a person communicates rather than from descriptions of their demographics or interview responses. This weight-level adaptation may overcome the ``insufficient individuation'' of prompting-based approaches.
 
-\begin{figure*}[H]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/fig1_paradigm_overview.pdf}
     \caption{Overview of the communicative stress test paradigm. Each participant's real text messages are used to fine-tune a LoRA adapter on Qwen3-8B, creating a per-person agent. Each agent engages in 20-turn conversations with standardized probe personas. The generated text is scored with risk language dictionaries and correlated with EMA-measured suicidal ideation.}
     \label{fig:paradigm}
-\end{figure*}
+\end{figure}
 
 The present study addresses six primary questions. First, do per-person fine-tuned language model agents produce risk-relevant language at rates that are associated with their real-world counterparts' suicidal ideation? Second, does the arena provide incremental predictive validity over direct analysis of participants' actual text messages? Third, is the predictive signal specific to interpersonal communication style, or would any behavioral data suffice? Fourth, do standardized conversational probes---designed to target specific ITS constructs---differentiate from the unstructured all-pairs arena, and does construct-specific scoring improve prediction? Fifth, are the adapters person-specific, such that clinical prediction depends on correct person--adapter matching? Sixth, does the learned communication style reflect stable individual differences or transient states?
 
@@ -162,12 +162,12 @@ All primary analyses were between-person, correlating each participant's arena-d
 
 Figure~\ref{fig:summary} provides a roadmap of all analyses reported in this section, organized by purpose: core paradigms testing the communicative stress test concept, validation analyses confirming the signal's properties, and sensitivity analyses addressing potential confounds.
 
-\begin{figure*}[H]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/fig8_analysis_summary.pdf}
     \caption{Summary of all analyses. Core paradigms test the communicative stress test concept across different conversational configurations. Validation analyses confirm the signal is person-specific, partially robust to prompt changes, and not attributable to base-model artifacts. Sensitivity analyses address potential confounds. $N = 64$.}
     \label{fig:summary}
-\end{figure*}
+\end{figure}
 
 \subsection{Risk Language in Raw Messages}
 
@@ -206,12 +206,12 @@ Measure & $M$ & $SD$ & $Mdn$ & Range \\
 \end{tabular}
 \end{table}
 
-\begin{figure*}[H]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{figures/fig9_forest_plot.pdf}
     \caption{Forest plot of key correlations with suicidal ideation across all analyses, with 95\% confidence intervals. Core paradigms show that the probe arena and neutral small-talk probe are the strongest predictors, while the caption-trained arena produces no signal. Among individual probes, Neutral Acquaintance dominates and Demanding Authority fails. Validation analyses confirm adapter specificity (shuffle wrong-slot CI crosses zero) and partial prompt robustness. Cross-validated estimates show Neutral + Therapist as the most robust battery. Effect size benchmarks at $r = .30$ (medium) and $r = .50$ (large) are shown for reference.}
     \label{fig:forest}
-\end{figure*}
+\end{figure}
 
 \subsubsection{Suicide Mention Rate}
 
