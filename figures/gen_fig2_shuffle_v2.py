@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyArrowPatch
 
-fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(9, 4),
+fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(10, 4.5),
                                          gridspec_kw={'width_ratios': [1.1, 1]})
 
 # ============================================================
@@ -118,22 +118,37 @@ ax.text(8.1, 3.0, 'r = .426, p < .001', fontsize=7.5, ha='center', color=green, 
 # RIGHT PANEL: Bar chart (existing results)
 # ============================================================
 ax = ax_right
-ax.set_title('(b) Results', fontsize=10, fontweight='bold', loc='left', pad=8)
+ax.set_title('(b) Results', fontsize=10, fontweight='bold', loc='left', pad=12)
+
+import numpy as np
+N_shuf = 64
 
 conditions = ['Correct\nmatch', 'Shuffled\n\u2192 assigned\nperson\'s SI', 'Shuffled\n\u2192 adapter\nowner\'s SI']
 values = [0.433, 0.071, 0.426]
 colors_bar = ['#2563EB', '#EF4444', '#10B981']
 pvals = ['p < .001', 'p = .577', 'p < .001']
 
-bars = ax.bar(conditions, values, color=colors_bar, width=0.6, edgecolor='white', linewidth=0.5)
+# Compute 95% CIs via Fisher z
+def r_ci(r, n):
+    z = np.arctanh(r)
+    se = 1.0 / np.sqrt(n - 3)
+    lo = np.tanh(z - 1.96 * se)
+    hi = np.tanh(z + 1.96 * se)
+    return r - lo, hi - r
 
-for bar, val, pv in zip(bars, values, pvals):
-    y = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2, y + 0.015,
+ci_lo = [r_ci(v, N_shuf)[0] for v in values]
+ci_hi = [r_ci(v, N_shuf)[1] for v in values]
+
+bars = ax.bar(conditions, values, color=colors_bar, width=0.6, edgecolor='white', linewidth=0.5,
+              yerr=[ci_lo, ci_hi], capsize=3, error_kw={'linewidth': 0.8, 'color': '#555555'})
+
+for bar, val, pv, chi in zip(bars, values, pvals, ci_hi):
+    y = val + chi  # place text above error bar
+    ax.text(bar.get_x() + bar.get_width()/2, y + 0.02,
             f'r = {val:.3f}\n{pv}', ha='center', va='bottom', fontsize=8)
 
 ax.set_ylabel('Correlation with Suicidal Ideation (r)')
-ax.set_ylim(0, 0.55)
+ax.set_ylim(-0.1, 0.75)
 ax.axhline(y=0, color='black', linewidth=0.5)
 
 # Annotation

@@ -93,11 +93,11 @@ plt.close()
 
 
 # ============================================================
-# FIG 7: Temporal Stability -- fix overlap by widening, narrowing bars
+# FIG 7: Temporal Stability -- fix overlap: wider fig, bigger gaps, no n.s.
 # ============================================================
 print("Fixing Figure 7: Temporal Stability...")
 
-fig, ax = plt.subplots(1, 1, figsize=(6.5, 3.5))  # wider
+fig, ax = plt.subplots(1, 1, figsize=(8, 3.5))  # much wider
 n_split = 66
 
 constructs = ['SI Mean', 'Burden', 'Belonging', 'Neg Affect']
@@ -105,8 +105,9 @@ r_full = [0.576, 0.392, 0.368, 0.347]
 r_first = [0.359, 0.09, 0.12, 0.08]
 r_second = [0.396, 0.34, 0.40, 0.34]
 
-x = np.arange(len(constructs))
-width = 0.22  # narrower
+x = np.arange(len(constructs)) * 1.2  # spread groups further apart
+width = 0.20  # narrower bars
+gap = 0.06  # explicit gap between bars
 
 ci_full = [[r_ci(r, N)[0] for r in r_full],
            [r_ci(r, N)[1] for r in r_full]]
@@ -115,13 +116,13 @@ ci_first = [[r_ci(r, n_split)[0] for r in r_first],
 ci_second = [[r_ci(r, n_split)[0] for r in r_second],
              [r_ci(r, n_split)[1] for r in r_second]]
 
-ax.bar(x - width - 0.02, r_full, width, yerr=ci_full, capsize=2,
+ax.bar(x - width - gap, r_full, width, yerr=ci_full, capsize=2,
        label='Full adapters', color=COLORS[0], alpha=0.85,
        error_kw={'linewidth': 0.8, 'color': '#555555'})
 ax.bar(x, r_first, width, yerr=ci_first, capsize=2,
        label='First-half', color=COLORS[1], alpha=0.85,
        error_kw={'linewidth': 0.8, 'color': '#555555'})
-ax.bar(x + width + 0.02, r_second, width, yerr=ci_second, capsize=2,
+ax.bar(x + width + gap, r_second, width, yerr=ci_second, capsize=2,
        label='Second-half', color=COLORS[2], alpha=0.85,
        error_kw={'linewidth': 0.8, 'color': '#555555'})
 
@@ -130,10 +131,6 @@ ax.set_xticks(x)
 ax.set_xticklabels(constructs, fontsize=9)
 ax.set_ylim(0, 0.75)
 ax.legend(frameon=False, loc='upper right', fontsize=8)
-
-for i in [1, 2, 3]:
-    ci_top = r_first[i] + ci_first[1][i]
-    ax.text(x[i], ci_top + 0.02, 'n.s.', ha='center', fontsize=7, color=COLORS[3])
 
 save_fig(fig, 'fig7_temporal_stability')
 plt.close()
