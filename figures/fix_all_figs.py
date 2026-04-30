@@ -142,7 +142,7 @@ plt.close()
 print("Fixing Figure 9: Forest Plot...")
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 11))  # taller + wider for left labels
-ax.set_xlim(-0.35, 0.85)
+ax.set_xlim(-0.55, 0.85)
 
 # Data organized by section
 sections = [
@@ -205,7 +205,7 @@ for section_name, rows in reversed(sections):
 
     # Section header
     y_pos += 0.4
-    ax.text(-0.33, y_pos, section_name, fontsize=10, fontweight='bold',
+    ax.text(-0.53, y_pos, section_name, fontsize=10, fontweight='bold',
             va='center', color='#333333')
     y_pos += 1.2
 
