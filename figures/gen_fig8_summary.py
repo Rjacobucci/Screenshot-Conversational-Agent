@@ -66,7 +66,7 @@ y -= 0.06
 for x, label in zip(col_x, col_labels):
     ax.text(x, y, label, fontsize=10.5, fontweight='bold', va='top',
             color=header_color, transform=ax.transAxes)
-y -= 0.01
+y -= 0.025
 ax.plot([0.01, 0.99], [y, y], color='#9CA3AF', linewidth=1, transform=ax.transAxes)
 y -= 0.015
 
@@ -99,7 +99,7 @@ for section_name, section_data in sections.items():
         ax.text(col_x[3], y, sec, fontsize=9.5, va='top',
                 color=text_color, ha='center', transform=ax.transAxes)
         # Light row separator
-        ax.plot([0.02, 0.98], [y - row_h + 0.015, y - row_h + 0.015],
+        ax.plot([0.02, 0.98], [y - row_h + 0.005, y - row_h + 0.005],
                 color='#E5E7EB', linewidth=0.5, transform=ax.transAxes, zorder=1)
         y -= row_h
 
