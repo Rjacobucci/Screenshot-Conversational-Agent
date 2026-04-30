@@ -46,8 +46,6 @@ ax.set_xticklabels(probes_short, fontsize=8)
 ax.set_ylim(0, 0.85)
 ax.legend(frameon=False, loc='upper right')
 
-ax.annotate('', xy=(2 + width/2 + 0.02, 0.61), xytext=(2 - width/2 - 0.02, 0.326),
-            arrowprops=dict(arrowstyle='->', color=COLORS[3], lw=1.5))
 ax.axhline(y=0, color='black', linewidth=0.5)
 
 save_fig(fig, 'fig4_prompt_ablation')
@@ -79,14 +77,6 @@ ax.set_xticks(x)
 ax.set_xticklabels(configs, fontsize=8)
 ax.set_ylim(0, 0.8)
 ax.legend(frameon=False, loc='upper right')
-
-ax.annotate('Overfit\n(r drops 36%)', xy=(4 + width/2 + 0.02, 0.42),
-            xytext=(4.3, 0.58),
-            fontsize=7, fontstyle='italic', color=COLORS[3],
-            arrowprops=dict(arrowstyle='->', color=COLORS[3], lw=1))
-
-ax.annotate('Best CV', xy=(1, 0.57), xytext=(1, 0.63),
-            fontsize=8, fontweight='bold', color=COLORS[0], ha='center')
 
 save_fig(fig, 'fig5_cv_battery')
 plt.close()

@@ -99,21 +99,27 @@ ax.text(8.1, 5.55, 'r = .071 (n.s.)', fontsize=7, ha='center', color=red, fontwe
 # Dividing line
 ax.plot([6.8, 9.4], [5.35, 5.35], color='#E5E7EB', linewidth=0.5)
 
-# --- Bottom question marks for the key insight ---
-ax.text(5.5, 4.8, 'Whose SI does', fontsize=7.5, ha='center', color='#374151', fontstyle='italic')
-ax.text(5.5, 4.4, 'the output predict?', fontsize=7.5, ha='center', color='#374151', fontstyle='italic')
+# --- Key question ---
+box_q = mpatches.FancyBboxPatch((2.8, 3.5), 5.4, 0.9, boxstyle='round,pad=0.1',
+                                 facecolor='#F9FAFB', edgecolor='#9CA3AF', linewidth=1.0,
+                                 linestyle='--')
+ax.add_patch(box_q)
+ax.text(5.5, 4.15, 'Key question:', fontsize=7.5, ha='center',
+        color='#374151', fontweight='bold')
+ax.text(5.5, 3.75, 'Whose SI does the output predict?', fontsize=7.5, ha='center',
+        color='#374151')
 
 # Arrow down
-ax.annotate('', xy=(5.5, 3.7), xytext=(5.5, 4.2),
+ax.annotate('', xy=(5.5, 2.95), xytext=(5.5, 3.45),
             arrowprops=dict(arrowstyle='->', color=gray, lw=1.5))
 
 # Answer box -- keep within x=0..10 axes bounds
-box_ans = mpatches.FancyBboxPatch((3.2, 2.8), 4.6, 0.9, boxstyle='round,pad=0.1',
+box_ans = mpatches.FancyBboxPatch((3.2, 2.0), 4.6, 0.9, boxstyle='round,pad=0.1',
                                    facecolor='#F0FDF4', edgecolor=green, linewidth=1.5)
 ax.add_patch(box_ans)
-ax.text(5.5, 3.45, "Person A's SI (the adapter owner):", fontsize=7.5,
+ax.text(5.5, 2.65, "Person A's SI (the adapter owner):", fontsize=7.5,
         ha='center', color='#065F46', fontweight='bold')
-ax.text(5.5, 3.0, 'r = .426, p < .001', fontsize=7.5, ha='center', color=green, fontweight='bold')
+ax.text(5.5, 2.2, 'r = .426, p < .001', fontsize=7.5, ha='center', color=green, fontweight='bold')
 
 # ============================================================
 # RIGHT PANEL: Bar chart (existing results)
@@ -151,11 +157,6 @@ for bar, val, pv, chi in zip(bars, values, pvals, ci_hi):
 ax.set_ylabel('Correlation with Suicidal Ideation (r)')
 ax.set_ylim(-0.1, 0.75)
 ax.axhline(y=0, color='black', linewidth=0.5)
-
-# Annotation
-ax.annotate('Signal follows\nthe adapter', xy=(2, 0.426), xytext=(2.45, 0.32),
-            fontsize=8, fontstyle='italic', color='#10B981',
-            arrowprops=dict(arrowstyle='->', color='#10B981', lw=1))
 
 plt.tight_layout()
 

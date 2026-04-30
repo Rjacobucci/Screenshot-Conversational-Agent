@@ -98,8 +98,9 @@ for section_name, section_data in sections.items():
                 transform=ax.transAxes)
         ax.text(col_x[3], y, sec, fontsize=9.5, va='top',
                 color=text_color, ha='center', transform=ax.transAxes)
-        # Light row separator
-        ax.plot([0.02, 0.98], [y - row_h + 0.005, y - row_h + 0.005],
+        # Light row separator -- centered between this row and next
+        sep_y = y - row_h * 0.5
+        ax.plot([0.02, 0.98], [sep_y, sep_y],
                 color='#E5E7EB', linewidth=0.5, transform=ax.transAxes, zorder=1)
         y -= row_h
 
