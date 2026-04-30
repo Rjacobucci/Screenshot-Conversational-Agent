@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyArrowPatch
 
-fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(10, 4.5),
-                                         gridspec_kw={'width_ratios': [1.1, 1]})
+fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(11, 5.0),
+                                         gridspec_kw={'width_ratios': [1.3, 1],
+                                                      'wspace': 0.35})
 
 # ============================================================
 # LEFT PANEL: Schematic of the shuffle procedure
@@ -99,20 +100,20 @@ ax.text(8.1, 5.55, 'r = .071 (n.s.)', fontsize=7, ha='center', color=red, fontwe
 ax.plot([6.8, 9.4], [5.35, 5.35], color='#E5E7EB', linewidth=0.5)
 
 # --- Bottom question marks for the key insight ---
-ax.text(8.1, 4.8, 'Whose SI does', fontsize=7.5, ha='center', color='#374151', fontstyle='italic')
-ax.text(8.1, 4.4, 'the output predict?', fontsize=7.5, ha='center', color='#374151', fontstyle='italic')
+ax.text(5.5, 4.8, 'Whose SI does', fontsize=7.5, ha='center', color='#374151', fontstyle='italic')
+ax.text(5.5, 4.4, 'the output predict?', fontsize=7.5, ha='center', color='#374151', fontstyle='italic')
 
 # Arrow down
-ax.annotate('', xy=(8.1, 3.7), xytext=(8.1, 4.2),
+ax.annotate('', xy=(5.5, 3.7), xytext=(5.5, 4.2),
             arrowprops=dict(arrowstyle='->', color=gray, lw=1.5))
 
-# Answer box
-box_ans = mpatches.FancyBboxPatch((5.8, 2.8), 4.6, 0.9, boxstyle='round,pad=0.1',
+# Answer box -- keep within x=0..10 axes bounds
+box_ans = mpatches.FancyBboxPatch((3.2, 2.8), 4.6, 0.9, boxstyle='round,pad=0.1',
                                    facecolor='#F0FDF4', edgecolor=green, linewidth=1.5)
 ax.add_patch(box_ans)
-ax.text(8.1, 3.45, "Person A's SI (the adapter owner):", fontsize=7.5,
+ax.text(5.5, 3.45, "Person A's SI (the adapter owner):", fontsize=7.5,
         ha='center', color='#065F46', fontweight='bold')
-ax.text(8.1, 3.0, 'r = .426, p < .001', fontsize=7.5, ha='center', color=green, fontweight='bold')
+ax.text(5.5, 3.0, 'r = .426, p < .001', fontsize=7.5, ha='center', color=green, fontweight='bold')
 
 # ============================================================
 # RIGHT PANEL: Bar chart (existing results)
