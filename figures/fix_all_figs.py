@@ -141,7 +141,7 @@ plt.close()
 # ============================================================
 print("Fixing Figure 9: Forest Plot...")
 
-fig, ax = plt.subplots(1, 1, figsize=(7, 9))
+fig, ax = plt.subplots(1, 1, figsize=(7, 11))  # taller for more spacing
 ax.set_xlim(-0.2, 0.85)
 
 # Data organized by section
@@ -178,10 +178,12 @@ sections = [
     ]),
 ]
 
+LABEL_X = 0.76  # fixed x for all value labels to avoid overlap
+
 y_pos = 0
 y_positions = []
 y_labels = []
-y_colors = []
+row_step = 1.3  # more vertical space between rows
 
 for section_name, rows in reversed(sections):
     for label, r, n, color in reversed(rows):
@@ -189,37 +191,37 @@ for section_name, rows in reversed(sections):
         lo = r - lo_err
         hi = r + hi_err
 
-        ax.plot([lo, hi], [y_pos, y_pos], color=color, linewidth=2, solid_capstyle='butt')
-        ax.plot(r, y_pos, 'D', color=color, markersize=5, zorder=5)
+        ax.plot([lo, hi], [y_pos, y_pos], color=color, linewidth=2.5, solid_capstyle='butt')
+        ax.plot(r, y_pos, 'D', color=color, markersize=6, zorder=5)
 
-        # Value label
+        # Value label at fixed x position
         label_color = '#999999' if color == 'lightgray' else color
-        ax.text(hi + 0.02, y_pos, f'.{abs(int(round(r*1000))):03d}',
-                fontsize=8, va='center', color=label_color)
+        ax.text(LABEL_X, y_pos, f'.{abs(int(round(r*1000))):03d}',
+                fontsize=9, va='center', color=label_color, fontweight='bold')
 
         y_labels.append(label)
         y_positions.append(y_pos)
-        y_pos += 1
+        y_pos += row_step
 
     # Section header
-    y_pos += 0.3
-    ax.text(-0.18, y_pos, section_name, fontsize=9, fontweight='bold',
+    y_pos += 0.4
+    ax.text(-0.18, y_pos, section_name, fontsize=10, fontweight='bold',
             va='center', color='#333333')
-    y_pos += 1.0
+    y_pos += 1.2
 
 ax.set_yticks(y_positions)
-ax.set_yticklabels(y_labels, fontsize=8)
-ax.set_xlabel('Correlation with Suicidal Ideation (r)')
+ax.set_yticklabels(y_labels, fontsize=9)
+ax.set_xlabel('Correlation with Suicidal Ideation (r)', fontsize=10)
 
 # Reference lines
 ax.axvline(x=0, color='black', linewidth=0.5)
 ax.axvline(x=0.3, color='#DDDDDD', linewidth=0.8, linestyle='--')
 ax.axvline(x=0.5, color='#DDDDDD', linewidth=0.8, linestyle='--')
-ax.text(0.3, -0.8, 'medium', fontsize=7, ha='center', color='#BBBBBB')
-ax.text(0.5, -0.8, 'large', fontsize=7, ha='center', color='#BBBBBB')
+ax.text(0.3, -1.0, 'medium', fontsize=8, ha='center', color='#BBBBBB')
+ax.text(0.5, -1.0, 'large', fontsize=8, ha='center', color='#BBBBBB')
 
-ax.text(0.5, y_pos + 0.3, '95% CI shown; diamonds = point estimates',
-        fontsize=8, ha='center', color='#999999', fontstyle='italic')
+ax.text(0.5, y_pos + 0.5, '95% CI shown; diamonds = point estimates',
+        fontsize=9, ha='center', color='#999999', fontstyle='italic')
 
 ax.spines['left'].set_visible(False)
 ax.tick_params(axis='y', length=0)
