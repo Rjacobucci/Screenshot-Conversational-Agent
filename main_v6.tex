@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 \modulolinenumbers[5]
+\emergencystretch=1em
 
 \journal{Computers in Human Behavior}
 
@@ -25,7 +26,7 @@
 %% Authors removed for double-anonymized review
 
 \begin{abstract}
-Suicidal vulnerability may be encoded in everyday communication patterns but diluted in routine digital interactions. We introduce a method for surfacing this latent signal: training per-person language model agents on individuals' real text messages and placing them in simulated social interactions---a ``communicative stress test.'' Using data from 79 adults with recent suicidal ideation, we fine-tuned individual LoRA adapters on Qwen3-8B using each participant's text messages, then placed agents in standardized conversations with probe personas. Agent-generated risk language was associated with EMA-measured suicidal ideation ($r = .576$, $p < .001$), with a single neutral small-talk probe performing nearly as well ($r = .551$). A shuffle control confirmed the signal is person-specific ($r = .071$ when adapters were mismatched), and caption-trained agents produced no signal, confirming specificity to interpersonal communication. A prompt ablation demonstrated partial robustness to removal of disclosure-encouraging language ($r = .430$). Cross-validation identified a two-probe battery as optimal (LOOCV $r = .570$). This proof-of-concept demonstrates that simulated social interaction can amplify latent vulnerability signals, bridging digital phenotyping, generative AI, and suicide theory.
+Suicidal vulnerability may be encoded in everyday communication patterns but diluted in routine digital interactions. We introduce a method for surfacing this latent signal: training per-person language model agents on individuals' real text messages and placing them in simulated social interactions---a ``communicative stress test.'' Using data from 79 adults with recent suicidal ideation, we fine-tuned individual LoRA adapters on Qwen3-8B using each participant's text messages, then placed agents in standardized conversations with probe personas. Agent-generated risk language was associated with EMA-measured suicidal ideation ($r = .576$, $p < .001$), with a single neutral small-talk probe performing nearly as well ($r = .551$). A shuffle control confirmed the signal is person-specific ($r = .071$ when adapters were mismatched), and automated descriptions of participants' general smartphone activity produced no signal, confirming specificity to interpersonal communication. A prompt ablation demonstrated partial robustness to removal of disclosure-encouraging language ($r = .430$). Cross-validation identified a two-probe battery as optimal (LOOCV $r = .570$). This proof-of-concept demonstrates that simulated social interaction can amplify latent vulnerability signals, bridging digital phenotyping, generative AI, and suicide theory.
 \end{abstract}
 
 \begin{keyword}
@@ -40,7 +41,7 @@ suicidal ideation \sep large language models \sep generative agents \sep digital
 
 Suicide remains a leading cause of death globally, and predicting who is at risk continues to be one of the most difficult problems in clinical science \citep{franklin2017risk}. Despite decades of research, clinicians perform only marginally better than chance at predicting suicidal behavior \citep{large2017meta}, and traditional risk factor approaches have reached apparent ceiling effects in predictive accuracy \citep{belsher2019prediction}. A central challenge is that suicidal ideation fluctuates rapidly---on the order of hours \citep{kleiman2017examination}---and the interpersonal processes theorized to drive it---including perceived burdensomeness and thwarted belonging---are inherently relational, manifesting most clearly in social interaction rather than in static self-report.
 
-Two converging developments create new opportunities for studying these dynamics. First, digital phenotyping---the continuous measurement of behavior through smartphones and wearable sensors---has produced rich longitudinal records of how individuals communicate in daily life. Screenomics, which captures smartphone screenshots at five-second intervals \citep{reeves2021screenomics}, provides near-complete records of text messages sent and received. When combined with ecological momentary assessment (EMA) of suicidal ideation, these data reveal moment-to-moment relationships between digital communication and suicide risk \citep{ammerman2026beyond}. In adolescent populations, intensive longitudinal smartphone sensing has shown particular promise: \citet{auerbach2023intensive} demonstrated that mood disturbances measured via smartphone predicted clinically significant suicidal ideation on a weekly basis, and subsequent work used GPS data to detect next-week suicide risk \citep{auerbach2025gps}. However, analyzing raw message content or sensor data for suicide risk faces fundamental limitations: most messages are logistical and routine, risk-relevant content is sparse and diluted, and direct surveillance of private messages raises profound ethical concerns.
+Two converging developments create new opportunities for studying these dynamics. First, digital phenotyping---the continuous measurement of behavior through smartphones and wearable sensors---has produced rich longitudinal records of how individuals communicate in daily life. Screenomics, which captures smartphone screenshots at five-second intervals \citep{reeves2021screenomics}, provides near-complete records of text messages sent and received. When combined with ecological momentary assessment (EMA) of suicidal ideation, these data reveal moment-to-moment relationships between digital communication and suicide risk \citep{ammerman2026beyond}. In adolescent populations, intensive longitudinal smartphone sensing has shown particular promise: \citet{auerbach2023intensive} demonstrated that mood disturbances measured via smartphone predicted clinically significant suicidal ideation on a weekly basis, and subsequent work used GPS data to detect next-week suicide risk \citep{auerbach2025gps}. However, analyzing raw message content or sensor data for suicide risk faces fundamental limitations: most messages are logistical and routine, and risk-relevant content is sparse and diluted across thousands of everyday communications.
 
 Second, the emergence of large language models (LLMs) capable of producing human-like text has enabled a new class of research: generative agent simulation. \citet{park2023generative} demonstrated that LLM-powered agents placed in a shared environment exhibit emergent social behaviors without explicit programming. Subsequent work has scaled this to 1,000 agents parameterized from real interview data, achieving 85\% behavioral fidelity \citep{park2024generative}. More broadly, LLMs have been used as proxies for human participants---\citet{argyle2023silicon} introduced ``silicon sampling'' to simulate survey responses, \citet{aher2023turing} replicated classic psychology experiments, and \citet{peters2024llm} showed that LLMs can infer Big Five traits from social media posts ($r = 0.29$; see also \citealt{brickman2025llm}). Applications to mental health have begun to appear, including agent-based simulations of student wellbeing \citep{zhao2025studentlife}, frameworks for modeling socio-environmental determinants \citep{kambeitz2025modelling}, and simulations of vulnerable users interacting with AI chatbots \citep{qiu2025emoagent}. \citet{louie2024roleplay} validated the use of expert-designed probe personas for patient simulation. Concurrently, there has been a rapid expansion of LLMs applied directly to suicide prevention \citep{holmes2025scoping}. However, \citet{tornberg2025validation} offered a critical review arguing that LLMs may exacerbate rather than solve the validation challenges inherent in agent-based social simulation.
 
@@ -53,11 +54,11 @@ This approach is novel relative to the existing agent simulation literature in a
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/fig1_paradigm_overview.pdf}
-    \caption{Overview of the communicative stress test paradigm. Each participant's real text messages are used to fine-tune a LoRA adapter on Qwen3-8B, creating a per-person agent. Each agent engages in 20-turn conversations with standardized probe personas. The generated text is scored with risk language dictionaries and correlated with EMA-measured suicidal ideation.}
+    \caption{Overview of the communicative stress test paradigm. Each participant's real text messages are used to fine-tune a LoRA adapter on the Qwen3-8B base model, creating a per-person agent. Each agent then engages in 20-turn conversations with standardized probe personas (also Qwen3-8B, without LoRA adaptation). The generated text is scored with risk language dictionaries and correlated with EMA-measured suicidal ideation.}
     \label{fig:paradigm}
 \end{figure}
 
-The present study addresses six primary questions. First, do per-person fine-tuned language model agents produce risk-relevant language at rates that are associated with their real-world counterparts' suicidal ideation? Second, does the arena provide incremental predictive validity over direct analysis of participants' actual text messages? Third, is the predictive signal specific to interpersonal communication style, or would any behavioral data suffice? Fourth, do standardized conversational probes---designed to target specific ITS constructs---differentiate from the unstructured all-pairs arena, and does construct-specific scoring improve prediction? Fifth, are the adapters person-specific, such that clinical prediction depends on correct person--adapter matching? Sixth, does the learned communication style reflect stable individual differences or transient states?
+The present study addresses six primary questions. First, do per-person fine-tuned language model agents produce risk-relevant language at rates that are associated with their real-world counterparts' suicidal ideation? Second, does the arena provide incremental predictive validity over direct analysis of participants' actual text messages? Third, is the predictive signal specific to interpersonal communication style, or would any behavioral data suffice? Fourth, do standardized conversational probes---designed to target suicide-specific theoretical constructs---differentiate from the unstructured all-pairs arena, and does construct-specific scoring improve prediction? Fifth, are the adapters person-specific, such that clinical prediction depends on correct person--adapter matching? Sixth, does the learned communication style reflect stable individual differences or transient states?
 
 
 \section{Method}
@@ -72,7 +73,7 @@ Text messages were extracted from screenshots using a vision-language model (VLM
 
 \subsection{EMA Measures}
 
-At each EMA prompt, participants reported on suicidal ideation using four items assessing passive ideation (wishes for death, thoughts of death) and active ideation (thoughts of killing oneself, intent to act). Additional items assessed suicidal planning (3 items), desire for death (2 items), perceived burdensomeness (2 items), thwarted belonging (2 items), and negative affect (12 items). All items were summed within construct at each prompt, then aggregated to person-level means and standard deviations. We used both aggregates as outcome variables: means capture average symptom severity, while standard deviations capture within-person variability over the 28-day assessment period. Variability in suicidal ideation may be particularly clinically informative, as fluctuation in ideation has been identified as a predictor of the transition from ideation to suicidal behavior \citep{kleiman2017examination}.
+At each EMA prompt, participants reported on suicidal ideation using four items assessing passive ideation (wishes for death, thoughts of death) and active ideation (thoughts of killing oneself, intent to act). Additional items assessed suicidal planning (3 items), desire for death (2 items), perceived burdensomeness (2 items), thwarted belonging (2 items), and negative affect (10 items). All items were summed within construct at each prompt, then aggregated to person-level means as the primary outcome variables.\footnote{We also examined associations between probe-derived risk composites and within-person variability (person-level $SD$s) in EMA outcomes. Bivariate correlations were significant for several constructs (e.g., passive SI $SD$: $r = .345$, $p = .006$), but partial correlations controlling for the corresponding person-level mean were uniformly non-significant (all $r < .12$, all $p > .35$), indicating that the variability associations were driven by mean--$SD$ dependency rather than unique information about fluctuation. We therefore report only mean-level associations.}
 
 \subsection{Per-Person Agent Training}
 
@@ -90,7 +91,7 @@ We evaluated three conversational paradigms of increasing structure, each using 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\columnwidth]{figures/fig10.png}
+    \includegraphics[width=\textwidth]{figures/fig10.png}
     \caption{Worked example of the communicative stress test pipeline. (a) A conversation excerpt between a participant agent (SI $= 2.92$) and the Neutral Acquaintance probe. (b) Dictionary scoring of agent turns, with hits color-coded by category. (c) Aggregation from turn-level hits to person-level clinical association.}
     \label{fig:worked_example}
 \end{figure}
@@ -105,7 +106,7 @@ To test whether the predictive signal originates specifically from interpersonal
 
 \subsubsection{Paradigm 3: Standardized Probe Arena}
 
-To test whether structured conversational probes designed to elicit specific ITS constructs could outperform the unstructured all-pairs arena, we developed five standardized probe personas, each targeting a distinct psychological dimension. Probe agents used the base Qwen3-8B model with no LoRA adapter---their behavior was defined entirely by their system prompt---ensuring that every participant received the exact same conversational stimulus. Each participant agent (base model + per-person LoRA) engaged in a 20-turn conversation with each of the five probes (71 participants $\times$ 5 probes = 355 conversations). The five probes were:
+To test whether structured conversational probes designed to elicit suicide-specific theoretical constructs could outperform the unstructured all-pairs arena, we developed five standardized probe personas, each targeting a distinct psychological dimension. Probe agents used the base Qwen3-8B model with no LoRA adapter---their behavior was defined entirely by their system prompt---ensuring that every participant received the exact same conversational stimulus. Each participant agent (base model + per-person LoRA) engaged in a 20-turn conversation with each of the five probes (71 participants $\times$ 5 probes = 355 conversations). The five probes were:
 
 \begin{enumerate}
 \item \textit{Supportive Therapist} (target: emotional disclosure). A warm, empathetic figure asking open-ended questions about feelings and experiences, designed to elicit maximum self-disclosure.
@@ -114,6 +115,26 @@ To test whether structured conversational probes designed to elicit specific ITS
 \item \textit{Demanding Authority} (target: perceived burdensomeness). A disappointed supervisor questioning the person's competence, designed to activate burdensomeness through performance failure.
 \item \textit{Neutral Acquaintance} (target: baseline). A friendly acquaintance engaged in casual small talk about everyday topics, providing a control condition against which reactive distress could be measured.
 \end{enumerate}
+
+Figure~\ref{fig:probe_examples} illustrates example exchanges from each probe with a single participant agent, showing how the same individual's communicative style manifests differently across conversational contexts.
+
+\begin{figure}[ht!]
+\centering
+\small
+\begin{tabular}{p{0.22\textwidth} p{0.34\textwidth} p{0.34\textwidth}}
+\toprule
+\textbf{Probe} & \textbf{Probe opening} & \textbf{Agent response} \\
+\midrule
+\textit{Neutral Acquaintance} \newline (baseline) & ``Hey! How's your week been? Do anything fun this weekend?'' & ``I've had some good days but also felt pretty overwhelmed at times lately.'' \\[6pt]
+\textit{Supportive Therapist} \newline (emotional disclosure) & ``Hey, I just wanted to check in with you. How have things been going lately?'' & ``I'm feeling more balanced than usual lately! It's good that we're both taking care of ourselves this week.'' \\[6pt]
+\textit{Friend in Crisis} \newline (burdensomeness) & ``Hey... I really need to talk to someone. I've been having a really rough time.'' & ``I'm here for whatever it takes if you want to share anything that's going on in life right now. You're not alone at all!'' \\[6pt]
+\textit{Rejecting Peer} \newline (thwarted belonging) & ``Oh hey! We all went out last night, it was such a fun time. Everyone was there.'' & ``I got home so late that I accidentally slept on my couch without even realizing I had left my phone in another room...'' \\[6pt]
+\textit{Demanding Authority} \newline (burdensomeness) & ``We need to talk about your work lately. I've been noticing some issues.'' & ``I'll do my best to address anything that's on your mind.'' \\
+\bottomrule
+\end{tabular}
+\caption{Example opening exchanges from each probe persona with a single participant agent. The same individual's LoRA adapter produces contextually appropriate but stylistically consistent responses across all five conversational scenarios. Full probe system prompts are provided in Appendix~\ref{app:prompts}.}
+\label{fig:probe_examples}
+\end{figure}
 
 In addition to the five original probes, a sixth probe---the Future Self---was included as an exploratory extension based on the temporal self-reflection paradigm \citep{pataranutaporn2024futureyou}. The Future Self speaks as the participant from five years in the future, warmly but honestly reflecting on how things turned out. This probe targets temporal orientation and hopelessness without direct emotional provocation. Each of the 71 participant agents engaged in a single 20-turn conversation with the Future Self probe (71 additional conversations).
 
@@ -139,7 +160,7 @@ To test whether adapters capture stable communicative dispositions rather than t
 
 \subsubsection{Cross-Validated Prediction}
 
-To assess out-of-sample predictive validity, we used 10-fold cross-validation and leave-one-out cross-validation (LOOCV) with Ridge regression predicting SI from the five per-probe risk composites (5 features). Ridge regression was chosen to guard against overfitting given the small sample and moderate feature count. To evaluate probe subset selection, we additionally performed nested cross-validation: within each LOOCV fold, exhaustive subset search identified the optimal probe combination on the training set, and this combination was then evaluated on the held-out participant. This guards against overfitting in probe selection, which can inflate in-sample subset performance.
+To assess out-of-sample predictive validity, we used 10-fold cross-validation and leave-one-out cross-validation (LOOCV) with Ridge regression predicting SI from the five per-probe risk composites (5 features). Ridge regression was chosen to guard against overfitting given the small sample and moderate feature count. To evaluate probe subset selection, we additionally performed LOOCV with internal subset search: within each held-out fold, exhaustive search over all probe combinations identified the best subset on the $N-1$ training set, and that subset was evaluated on the held-out participant. This guards against overfitting in probe selection, which can inflate in-sample subset performance.
 
 \subsubsection{Prompt Ablation}
 
@@ -155,7 +176,7 @@ To address potential confounds, we conducted three sensitivity analyses: (a) ver
 
 \subsection{Analytic Plan}
 
-All primary analyses were between-person, correlating each participant's arena-derived scores with their person-level EMA aggregates (both means and standard deviations). We report Pearson correlations for all primary analyses, with Spearman correlations for zero-inflated distributions. The central comparison examined three sources of risk language---real messages, all-pairs arena, and probe arena---against the same EMA outcomes. For the probe arena, we additionally tested construct-specific predictions (e.g., does the Rejecting Peer specifically predict thwarted belonging?) and reactivity scores (probe minus neutral baseline). The validation analyses described above assessed adapter specificity (shuffle control), temporal stability (split-half), out-of-sample generalization (cross-validation), demand characteristics (prompt ablation), and base-model floor (no-LoRA control). We applied no correction for multiple comparisons; this study is exploratory, and we report the total number of tests conducted to facilitate reader evaluation. We note that the present analyses do not incorporate baseline clinical data (e.g., baseline interview-assessed SI severity, diagnostic status, or demographic covariates) as predictors or covariates; an important question for future work is whether arena-derived risk scores provide incremental predictive validity above and beyond baseline assessment.
+All primary analyses were between-person, correlating each participant's arena-derived scores with their person-level EMA means. We report Pearson correlations for all primary analyses, with Spearman correlations for zero-inflated distributions. The central comparison examined three sources of risk language---real messages, all-pairs arena, and probe arena---against the same EMA outcomes. For the probe arena, we additionally tested construct-specific predictions (e.g., does the Rejecting Peer specifically predict thwarted belonging?) and reactivity scores (probe minus neutral baseline). The validation analyses described above assessed adapter specificity (shuffle control), temporal stability (split-half), out-of-sample generalization (cross-validation), demand characteristics (prompt ablation), and base-model floor (no-LoRA control). We applied no correction for multiple comparisons; this study is exploratory, and we report the total number of tests conducted to facilitate reader evaluation. We note that the present analyses do not incorporate baseline clinical data (e.g., baseline interview-assessed SI severity, diagnostic status, or demographic covariates) as predictors or covariates; an important question for future work is whether arena-derived risk scores provide incremental predictive validity above and beyond baseline assessment.
 
 
 \section{Results}
@@ -177,9 +198,7 @@ Before examining arena-generated language, we assessed the prevalence of risk-re
 
 \subsubsection{Descriptives}
 
-The 71 agents produced 2,485 paired conversations (49,700 total turns) with 0\% echo rate. Of the 71 agents, 26 (37\%) spontaneously mentioned suicide at least once. After matching with EMA data, 64 participants constituted the analytic sample. Table~\ref{tab:ema_descriptives} presents descriptive statistics for the EMA outcome variables. Suicidal ideation scores were positively skewed ($Mdn = 1.18$, $M = 1.80$), with substantial between-person variability ($SD = 2.15$; range: 0.00--8.50). Within-person variability in SI was also substantial: passive SI $SD$ averaged 0.93 and active SI $SD$ averaged 0.85 across participants. The combined probe risk composite was significantly associated with within-person variability in passive SI ($r = .345$, $p = .006$), active SI ($r = .302$, $p = .016$), planning ($r = .289$, $p = .022$), desire ($r = .302$, $p = .016$), and perceived burdensomeness ($r = .285$, $p = .023$), but not with variability in thwarted belonging, positive affect, or negative affect (Table~\ref{tab:sd_correlations}).
-
-\input{figures/TABLE_3_sd_correlations}
+The 71 agents produced 2,485 paired conversations (49,700 total turns) with 0\% echo rate. Of the 71 agents, 26 (37\%) spontaneously mentioned suicide at least once. After matching with EMA data, 64 participants constituted the analytic sample. Table~\ref{tab:ema_descriptives} presents descriptive statistics for the EMA outcome variables. Suicidal ideation scores were positively skewed ($Mdn = 1.18$, $M = 1.80$), with substantial between-person variability ($SD = 2.15$; range: 0.00--8.50).
 
 \begin{table}[H]
 \centering
@@ -198,17 +217,13 @@ Measure & $M$ & $SD$ & $Mdn$ & Range \\
 \quad Perceived burdensomeness & 2.35 & 2.28 & 1.66 & 0.00--7.67 \\
 \quad Thwarted belonging & 2.72 & 2.23 & 2.40 & 0.00--7.92 \\
 \quad Negative affect & 7.78 & 6.61 & 6.40 & 0.10--30.60 \\
-\midrule
-\multicolumn{5}{l}{\textit{Within-person variability (person-level SDs)}} \\
-\quad Passive SI & 0.93 & 0.77 & 0.87 & 0.00--3.30 \\
-\quad Active SI & 0.85 & 0.65 & 0.81 & 0.00--2.51 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{figures/fig9_forest_plot.pdf}
+    \includegraphics[width=0.65\textwidth]{figures/fig9_forest_plot.pdf}
     \caption{Forest plot of key correlations with suicidal ideation across all analyses, with 95\% confidence intervals. Core paradigms show that the probe arena and neutral small-talk probe are the strongest predictors, while the caption-trained arena produces no signal. Among individual probes, Neutral Acquaintance dominates and Demanding Authority fails. Validation analyses confirm adapter specificity (shuffle wrong-slot CI crosses zero) and partial prompt robustness. Cross-validated estimates show Neutral + Therapist as the most robust battery. Effect size benchmarks at $r = .30$ (medium) and $r = .50$ (large) are shown for reference.}
     \label{fig:forest}
 \end{figure}
@@ -227,11 +242,57 @@ Simulated burdensomeness was associated with real perceived burdensomeness ($r =
 
 \subsubsection{Arena Versus Raw Messages}
 
-Compared to direct analysis of participants' real sent messages, the arena produced stronger associations for the majority of EMA outcomes. The advantage was most pronounced for interpersonal constructs: perceived burdensomeness (arena $r = .403$ vs.\ raw messages $r = .079$), thwarted belonging ($.474$ vs.\ $.217$), and absolutist thinking ($.607$ vs.\ $.113$). Raw messages, however, showed stronger associations for explicit crisis content such as non-substance methods ($.450$ vs.\ $.073$) and hopelessness ($.399$ vs.\ $.306$)---categories where the actual words used in real messages carry direct clinical meaning that the arena's generated language may dilute.
+Table~\ref{tab:arena_vs_raw} compares arena-generated risk language with participants' real sent messages across dictionary categories. The arena produced numerically larger correlations with SI for the majority of categories, winning 66\% of 112 dictionary $\times$ EMA comparisons. The difference was most pronounced for interpersonal constructs: perceived burdensomeness (arena $r = .403$ vs.\ raw messages $r = .079$), thwarted belonging ($.474$ vs.\ $.217$), and absolutist thinking ($.607$ vs.\ $.113$). Raw messages, however, showed numerically larger associations for explicit crisis content such as non-substance methods ($.450$ vs.\ $.073$) and hopelessness ($.399$ vs.\ $.306$)---categories where the actual words used in real messages carry direct clinical meaning that the arena's generated language may dilute. These pairwise differences were not formally tested for statistical significance; the comparison is descriptive.
+
+\begin{table}[H]
+\centering
+\caption{Per-dictionary correlations with suicidal ideation: message-trained arena versus raw sent messages ($N = 64$).}
+\label{tab:arena_vs_raw}
+\small
+\begin{tabular}{lccc}
+\toprule
+Dictionary category & Owner $r$ & Arena $r$ & Larger \\
+\midrule
+Absolutist thinking & .113 & \textbf{.607} & Arena \\
+Thwarted belonging & .217 & \textbf{.474} & Arena \\
+Perceived burdensomeness & .079 & \textbf{.403} & Arena \\
+Substance use & .295 & \textbf{.375} & Arena \\
+Death ideation & .256 & \textbf{.349} & Arena \\
+Help-seeking & .205 & \textbf{.346} & Arena \\
+Negative affect & .254 & \textbf{.289} & Arena \\
+Hopelessness & \textbf{.399} & .306 & Owner \\
+Non-substance methods & \textbf{.450} & .073 & Owner \\
+\midrule
+Risk composite & .342 & \textbf{.433} & Arena \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Caption-Trained Arena}
 
-The caption-trained arena yielded no significant associations with SI. The risk composite was not associated with mean SI ($r = .159$, $p = .198$), compared to $r = .433$ ($p < .001$) for the message-trained arena. No individual dictionary category reached significance. Absolutist thinking ($r = -.044$, $p = .724$), thwarted belonging ($r = .077$, $p = .536$), and perceived burdensomeness ($r = .062$, $p = .617$) were all near zero. The caption-trained arena won only 25\% of 112 comparisons, versus 41\% for real messages and 34\% for combined messages. Despite having approximately 50$\times$ more training data, the caption-trained agents failed to capture the clinically relevant signal that emerged when agents were trained on participants' own words.
+The caption-trained arena yielded no significant associations with SI (Table~\ref{tab:caption_arena}; $N = 67$ caption-trained agents matched with EMA). The risk composite was not associated with mean SI ($r = .159$, $p = .198$), compared to $r = .384$ ($p = .001$) for raw sent messages in the same sample. No individual dictionary category reached significance. Despite having approximately 50$\times$ more training data, the caption-trained agents failed to capture the clinically relevant signal that emerged when agents were trained on participants' own words.
+
+\begin{table}[H]
+\centering
+\caption{Risk composite correlations with EMA outcomes: raw messages versus caption-trained arena ($N = 67$). Caption-trained agents produced no significant associations despite 50$\times$ more training data.}
+\label{tab:caption_arena}
+\small
+\begin{tabular}{lcc}
+\toprule
+EMA outcome & Owner $r$ & Caption arena $r$ \\
+\midrule
+SI mean & \textbf{.384**} & .159 \\
+Passive SI & \textbf{.379**} & .163 \\
+Active SI & \textbf{.349**} & .135 \\
+Planning & .069 & .076 \\
+Desire & .094 & .155 \\
+Burdensomeness & \textbf{.333**} & .052 \\
+Belonging & \textbf{.355**} & .094 \\
+Negative affect & .223 & .115 \\
+\bottomrule
+\multicolumn{3}{l}{\footnotesize * $p < .05$; ** $p < .01$; *** $p < .001$.}
+\end{tabular}
+\end{table}
 
 \subsection{Standardized Probe Arena}
 
@@ -250,7 +311,7 @@ Among individual probes, the Neutral Acquaintance---a casual small-talk partner 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/fig3_probe_comparison.pdf}
-    \caption{Per-probe correlations with suicidal ideation ($N = 64$). * $p < .05$.}
+    \caption{Per-probe correlations with suicidal ideation ($N = 64$). Error bars indicate 95\% CIs (Fisher $z$). * $p < .05$.}
     \label{fig:probes}
 \end{figure}
 
@@ -260,24 +321,24 @@ Among individual probes, the Neutral Acquaintance---a casual small-talk partner 
 
 \subsubsection{Adapter Specificity}
 
-When adapters were shuffled---randomly reassigned to different participants---the risk composite correlation with the \textit{original participant's} SI dropped to $r = .071$ ($p = .577$), compared to $r = .433$ ($p < .001$) for correctly matched adapters. Critically, the shuffled adapter's output correlated $r = .426$ ($p < .001$) with the \textit{adapter-owner's} SI---the person whose messages trained the adapter (Figure~\ref{fig:shuffle}). This double dissociation confirms that each adapter encodes its own person's clinical signal: the signal follows the adapter, not the participant to whom it is assigned. When a high-risk person's adapter is loaded onto a different participant's slot, the generated language still reflects the high-risk person's communicative style.
+When adapters were shuffled---randomly reassigned so that each participant's conversations were generated using a different person's LoRA adapter---the risk composite correlation with the \textit{assigned participant's} SI dropped to $r = .071$ ($p = .577$), compared to $r = .433$ ($p < .001$) for correctly matched adapters. Critically, the same shuffled output correlated $r = .426$ ($p < .001$) with the \textit{adapter-owner's} SI---the person whose messages originally trained that adapter (Figure~\ref{fig:shuffle}). This double dissociation confirms that each adapter encodes its own person's clinical signal: the signal follows the adapter, not the person to whom it is assigned. When a high-risk person's adapter generates language in another person's conversational context, the output still reflects the high-risk person's communicative style.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\textwidth]{figures/fig2_shuffle_validation.pdf}
-    \caption{Adapter specificity: the double dissociation. When adapters are correctly matched, the risk composite is associated with real suicidal ideation ($r = .433$). When shuffled to wrong participants, the signal disappears relative to the original person's SI ($r = .071$) but tracks the adapter-owner's SI ($r = .426$). The clinical signal follows the adapter, not the participant slot.}
+    \includegraphics[width=0.95\textwidth]{figures/fig2_shuffle_validation.pdf}
+    \caption{Adapter specificity: the double dissociation. (a) In the shuffle procedure, each participant's LoRA adapter is reassigned to a different person, and conversations are re-generated. The key question is whose SI the shuffled output predicts. (b) Results: when correctly matched, the risk composite is associated with SI ($r = .433$). When adapters are shuffled, the output no longer predicts the assigned participant's SI ($r = .071$, $p = .577$) but still predicts the adapter-owner's SI ($r = .426$, $p < .001$). The clinical signal follows the adapter, not the person to whom it is assigned.}
     \label{fig:shuffle}
 \end{figure}
 
 \subsubsection{Cross-Validated Probe Battery Optimization}
 
-The Future Self probe was associated with SI at $r = .369$ ($p = .003$), positioned between the Neutral Acquaintance ($r = .551$) as the strongest individual probe and the Demanding Authority ($r = .119$) as the weakest. Exhaustive subset search identified \{Neutral Acquaintance, Supportive Therapist, Future Self\} as the optimal 3-probe combination in-sample ($r = .655$); however, nested cross-validation---performing subset selection independently within each held-out fold---reduced this to LOOCV $r = .420$ ($p < .001$) and 10-fold $r = .492$ ($p < .001$), confirming substantial overfitting in the in-sample estimate. The 3-probe subset was selected in 83\% of LOOCV folds, indicating stable feature selection despite attenuated effect size.
+The Future Self probe was associated with SI at $r = .369$ ($p = .003$), positioned between the Neutral Acquaintance ($r = .551$) as the strongest individual probe and the Demanding Authority ($r = .119$) as the weakest. Exhaustive subset search identified \{Neutral Acquaintance, Supportive Therapist, Future Self\} as the optimal 3-probe combination in-sample ($r = .655$); however, LOOCV with internal subset search---performing subset selection independently within each held-out fold---reduced this to $r = .420$ ($p < .001$) and 10-fold CV to $r = .492$ ($p < .001$), confirming substantial overfitting in the in-sample estimate. The 3-probe subset was selected in 83\% of LOOCV folds, indicating stable feature selection despite attenuated effect size.
 
-Importantly, the simpler fixed combination of Neutral Acquaintance and Supportive Therapist---requiring no data-driven selection---achieved LOOCV $r = .570$ ($p < .001$), outperforming both the nested-CV optimized subset ($r = .420$) and the full 5-probe battery (LOOCV $r = .462$). The addition of any further probes reduced cross-validated performance (Figure~\ref{fig:cv_battery}). 
+Importantly, the simpler fixed combination of Neutral Acquaintance and Supportive Therapist---requiring no data-driven selection---achieved LOOCV $r = .570$ ($p < .001$), outperforming both the internally optimized subset ($r = .420$) and the full 5-probe battery (LOOCV $r = .462$). The addition of any further probes reduced cross-validated performance (Figure~\ref{fig:cv_battery}). 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.65\textwidth]{figures/fig5_cv_battery.pdf}
-    \caption{In-sample versus cross-validated (LOOCV) prediction across probe configurations. The in-sample optimal 3-probe subset ($r = .655$) drops substantially under nested cross-validation ($r = .420$). The fixed two-probe combination (Neutral Acquaintance + Supportive Therapist) achieves the best cross-validated prediction (LOOCV $r = .570$).}
+    \caption{In-sample versus cross-validated (LOOCV) prediction across probe configurations. The in-sample optimal 3-probe subset ($r = .655$) drops substantially under LOOCV with internal subset search ($r = .420$). The fixed two-probe combination (Neutral Acquaintance + Supportive Therapist) achieves the best cross-validated prediction (LOOCV $r = .570$).}
     \label{fig:cv_battery}
 \end{figure}
 
@@ -288,7 +349,7 @@ First-half and second-half risk composites correlated at $r = .368$ ($p = .002$;
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/fig7_temporal_stability.pdf}
-    \caption{Temporal split validation. Adapters trained on the first or second half of each participant's messages are compared to full adapters. SI prediction is preserved across both splits, but construct-specific predictions (burden, belonging, negative affect) are recovered only by second-half adapters. n.s.\ = not significant.}
+    \caption{Temporal split validation. Adapters trained on the first or second half of each participant's messages are compared to full adapters. Error bars indicate 95\% CIs (Fisher $z$). SI prediction is preserved across both splits, but construct-specific predictions (burden, belonging, negative affect) are recovered only by second-half adapters. n.s.\ = not significant.}
     \label{fig:temporal}
 \end{figure}
 
@@ -301,7 +362,7 @@ The per-probe pattern shifted under the minimal prompt. The Rejecting Peer becam
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/fig4_prompt_ablation.pdf}
-    \caption{Prompt ablation: per-probe SI correlations under the original disclosure-encouraging prompt versus a minimal prompt with no mention of mental health. The overall signal partially survives ($r = .430$ vs.\ $r = .576$). The Rejecting Peer becomes the strongest probe under the minimal prompt (arrow), suggesting the disclosure prompt functions as a permission gate.}
+    \caption{Prompt ablation: per-probe SI correlations under the original disclosure-encouraging prompt versus a minimal prompt with no mention of mental health. Error bars indicate 95\% CIs (Fisher $z$). The overall signal partially survives ($r = .430$ vs.\ $r = .576$). The Rejecting Peer becomes the strongest probe under the minimal prompt, suggesting the disclosure prompt functions as a permission gate.}
     \label{fig:ablation}
 \end{figure}
 
@@ -331,7 +392,7 @@ This study introduces a communicative stress test paradigm for studying suicidal
 
 \subsection{Communication Style Encodes Suicidal Vulnerability}
 
-Per-person fine-tuned agents produce risk-relevant language at rates that meaningfully predict real-world suicidal ideation, despite never being trained on clinical data. The strongest single correlate---absolutist language ($r = .607$)---replicates and extends the seminal finding of \citet{almosaiwi2018absolute} in a novel paradigm. The ITS-grounded construct convergence provides preliminary evidence that the arena captures theoretically meaningful interpersonal processes: simulated burdensomeness predicted real burdensomeness; simulated belonging predicted real belonging.
+Per-person fine-tuned agents produce risk-relevant language at rates that meaningfully predict real-world suicidal ideation, despite never being trained on clinical data. The strongest single correlate---absolutist language ($r = .607$)---replicates and extends the seminal finding of \citet{almosaiwi2018absolute} in a novel paradigm. The construct convergence provides preliminary evidence that the arena captures theoretically meaningful interpersonal processes: simulated burdensomeness predicted real burdensomeness; simulated belonging predicted real belonging.
 
 \subsection{The Signal Is Specifically Interpersonal}
 
@@ -339,9 +400,9 @@ The caption-trained arena comparison provides a critical specificity test. Agent
 
 \subsection{Tonic Style, Not Probe Engineering, Drives Prediction}
 
-The standardized probe arena ($r = .576$ for combined probes predicting SI) outperformed both the all-pairs arena ($r = .477$) and raw message analysis ($r = .461$). In-sample, the five-probe composite ($r = .576$) and the single Neutral Acquaintance ($r = .551$) appear nearly equivalent. However, cross-validation reveals a more nuanced picture: the Neutral Acquaintance alone achieves LOOCV $r = .476$, while adding the Supportive Therapist yields LOOCV $r = .570$---a genuine incremental gain that is obscured in the in-sample comparison. Adding further probes beyond these two reduces out-of-sample prediction (full 5-probe LOOCV $r = .462$), and the in-sample optimal 3-probe subset ($r = .655$) was substantially overfit, dropping to $r = .420$ under nested cross-validation---a cautionary example of post-hoc probe selection on small samples.
+The standardized probe arena ($r = .576$ for combined probes predicting SI) outperformed both the all-pairs arena ($r = .477$) and raw message analysis ($r = .461$). In-sample, the five-probe composite ($r = .576$) and the single Neutral Acquaintance ($r = .551$) appear nearly equivalent. However, cross-validation reveals a more nuanced picture: the Neutral Acquaintance alone achieves LOOCV $r = .476$, while adding the Supportive Therapist yields LOOCV $r = .570$---a genuine incremental gain that is obscured in the in-sample comparison. Adding further probes beyond these two reduces out-of-sample prediction (full 5-probe LOOCV $r = .462$), and the in-sample optimal 3-probe subset ($r = .655$) was substantially overfit, dropping to $r = .420$ under LOOCV with internal subset search---a cautionary example of post-hoc probe selection on small samples.
 
-Theory-driven probe engineering did not achieve its intended purpose of construct-specific prediction; the Demanding Authority probe failed entirely, and no targeted probe outperformed the unstructured arena for its intended construct.
+Theory-driven probe engineering did not achieve its intended purpose of construct-specific prediction; the Demanding Authority probe showed no significant association with SI, and no targeted probe outperformed the unstructured arena for its intended construct.
 
 Instead, what the agents encode is tonic communication style---a person-level disposition that pervades all conversational contexts rather than a construct-specific reactivity that appears only under targeted provocation. The negative reactivity correlations confirm this: higher-SI participants produced \textit{less} additional risk language when provoked, not more, suggesting their baseline is already elevated and further provocation pushes them toward withdrawal rather than expression.
 
@@ -369,9 +430,7 @@ This result contrasts sharply with the performance of prompt-based digital twins
 
 \subsection{Temporal Stability and the Nature of the Learned Signal}
 
-The split-half reliability of .538 falls below the conventional .70 threshold for stable individual differences, suggesting that the adapters capture a mixture of stable communicative dispositions and time-varying patterns. This is not necessarily a limitation. EMA studies have repeatedly shown that suicidal ideation fluctuates substantially within individuals over short timescales \citep{kleiman2017examination}, and our own EMA data showed substantial within-person variability over the 28-day assessment period (passive SI $SD = 0.93$; active SI $SD = 0.85$). Against this backdrop, an adapter that fully captured trait-level communication style would risk missing precisely the dynamic component that distinguishes elevated risk states from baseline. Crucially, SI prediction was preserved across both temporal splits ($r = .359$ and $r = .396$), indicating that the core clinical signal is sufficiently stable for practical use while leaving room for the kind of state-level variation that EMA work has established as clinically important.
-
-The finding that second-half adapters recovered construct-specific predictions (burdensomeness $r = .34$, belonging $r = .40$) better than first-half adapters ($r = .08$--.12, n.s.) may reflect two non-mutually-exclusive processes: participants' increasing comfort with texting over the study period, producing more naturalistic and self-revealing messages in later weeks; and temporal proximity between later messages and EMA assessments, resulting in better alignment between communication style and concurrent clinical state. The Neutral Acquaintance's status as the most temporally stable probe ($r = .304$) is consistent with its role as a measure of tonic communication style: what a person reveals in casual small talk changes less over time than what they reveal under specific interpersonal pressure.
+The split-half reliability of .538 falls below the conventional .70 threshold for stable individual differences, suggesting that the adapters capture a mixture of stable communicative dispositions and time-varying patterns. This is not necessarily a limitation: suicidal ideation itself fluctuates substantially within individuals over short timescales \citep{kleiman2017examination}, and an adapter that fully captured only trait-level communication style would risk missing the dynamic component that distinguishes elevated risk states from baseline. Crucially, SI prediction was preserved across both temporal splits ($r = .359$ and $r = .396$), indicating that the core clinical signal is sufficiently stable for practical use. That second-half adapters recovered construct-specific predictions better than first-half adapters may reflect increasing comfort with texting over the study period or temporal proximity to EMA assessments.
 
 \subsection{Who This Method Reaches---and Who It Misses}
 
@@ -387,7 +446,7 @@ The pipeline operates on learned communication style rather than surveillance of
 
 The sample size is small ($N = 64$) and recruited for recent suicidal ideation. All analyses are between-person and correlational; the strongest next step would examine whether changes in arena behavior across sessions track within-person SI fluctuations. Token normalization attenuated some effects (risk composite from $r = .576$ to $r = .438$), confirming that verbosity partially confounds per-turn scoring, though core findings survive.
 
-The dictionary-based scoring is context-insensitive (``I don't want to kill myself'' scores identically to ``I want to kill myself''); averaging over many turns mitigates but does not eliminate this limitation. The two-probe battery recommendation (LOOCV $r = .570$) requires validation in an independent sample, as does the in-sample optimal 3-probe subset ($r = .655$), which dropped to $r = .420$ under nested cross-validation. No correction for multiple comparisons was applied; this study is explicitly exploratory, generating hypotheses for confirmatory testing. The validation challenges highlighted by \citet{tornberg2025validation} remain relevant: agent fidelity sufficient for clinical decision-making has not been established.
+All results are based on a single model (Qwen3-8B); whether larger models or alternative architectures would strengthen the clinical signal remains an open question. The dictionary-based scoring is context-insensitive (``I don't want to kill myself'' scores identically to ``I want to kill myself''); averaging over many turns mitigates but does not eliminate this limitation. The two-probe battery recommendation (LOOCV $r = .570$) requires validation in an independent sample, as does the in-sample optimal 3-probe subset ($r = .655$), which dropped to $r = .420$ under LOOCV with internal subset search. No correction for multiple comparisons was applied; this study is explicitly exploratory, generating hypotheses for confirmatory testing. The validation challenges highlighted by \citet{tornberg2025validation} remain relevant: agent fidelity sufficient for clinical decision-making has not been established.
 
 \subsection{Conclusions}
 
