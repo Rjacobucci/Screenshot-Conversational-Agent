@@ -1,8 +1,5 @@
 \documentclass[review,12pt,authoryear]{elsarticle}
 \usepackage{booktabs}
-\usepackage{float}
-\usepackage{amsmath}
-\usepackage{amssymb}
 \bibliographystyle{elsarticle-harv}
 
 \begin{document}
@@ -197,73 +194,5 @@ Raw msgs absolutist rate & .113 & .376 & .008 & 0.02 & \checkmark (both n.s.) \\
 \end{table}
 
 \noindent\textit{Note.} Median split was performed on the person-level mean of the 4-item EMA SI composite ($Mdn = 1.18$). Cohen's $d$ computed with pooled within-group variance. All arena-derived measures preserve a medium-to-large group difference under dichotomization; absolutist thinking shows the largest attenuation because dichotomizing both predictor and outcome would discard substantial information (we dichotomized only the outcome here).
-
-\clearpage
-\subsection*{Table S4. Cross-Model Robustness: Qwen3-8B vs.\ Gemma 3n E4B-it}
-
-To assess robustness to base-model choice, we re-ran the full pipeline (training 73 per-person LoRA adapters, then 5-probe arena and all-pairs arena) using Google's \texttt{gemma-3n-E4B-it} (8B raw parameters / 4B effective via MatFormer architecture) in place of Qwen3-8B. Identical data, identical filtering, identical LoRA hyperparameters ($r = 8$, $\alpha = 16$, $q/v$ projections, 3 epochs), identical scoring dictionaries, identical EMA outcomes. Training again yielded 71 of 73 successful adapters (matching the Qwen paper exactly: 2 failed to converge).
-
-\bigskip
-
-\begin{table}[H]
-\centering
-\footnotesize
-\caption{Headline correlations with EMA-measured suicidal ideation across the two base models ($N = 64$).}
-\label{tab:supp_s4_gemma}
-\setlength{\tabcolsep}{6pt}
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-& \multicolumn{2}{c}{Qwen3-8B (main paper)} & \multicolumn{2}{c}{Gemma 3n E4B-it} \\
-\cmidrule(lr){2-3} \cmidrule(lr){4-5}
-Measure & Pearson $r$ & $p$ & Pearson $r$ & $p$ \\
-\midrule
-5-probe combined composite & \textbf{+.576} & $<$.001 & $-$.119 & .35 \\
-Neutral Acquaintance probe & \textbf{+.551} & $<$.001 & $-$.022 & .86 \\
-Supportive Therapist probe & \textbf{+.412} & $<$.001 & $-$.259* & .04 \\
-All-pairs arena risk composite & \textbf{+.433} & $<$.001 & $-$.198 & .12 \\
-All-pairs arena absolutist thinking & \textbf{+.607} & $<$.001 & $-$.297* & .02 \\
-Suicide mention rate (all-pairs) & \textbf{+.269}* & .03 & $-$.187 & .14 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\noindent\textit{Note.} Every Qwen-significant correlation either fails to replicate (drops to null) or reverses direction under Gemma 3n. The most striking case is the all-pairs absolutist marker, which is statistically significant in the \textit{opposite} direction with Gemma ($r = -.297$, $p = .02$). Inspection of agent output suggests the mechanism: Gemma 3n's stronger chat/safety post-training produces uniformly conformant, low-affect responses, and its absolutist usage tracks cheerful conformity (e.g., ``\textit{always} being kind,'' ``\textit{completely} understand,'' ``\textit{absolutely}'') rather than despair (e.g., ``\textit{nothing} matters,'' ``\textit{everyone} hates,'' ``\textit{never} again''). The dictionary captures both, but Gemma's cheerful-absolutist usage is inversely associated with real distress. The per-person LoRA paradigm therefore appears to require a base model whose post-training does not over-write individual expressive style; results should not be assumed to generalize across model families without explicit re-validation.
-
-\clearpage
-\subsection*{Table S5. No-LoRA Floor Variance Comparison (Gemma 3n E4B-it)}
-
-To quantify how much the per-person LoRA adapter actually modifies Gemma's behavior, we ran the 5-probe battery 20 times using the base Gemma 3n model with no LoRA adapter, mirroring the no-LoRA floor procedure used for Qwen. For each probe and each dictionary measure, we compare the between-run standard deviation across the 20 base-model runs to the between-agent standard deviation across the 64 LoRA-adapted agents. The ratio (SD$_\text{LoRA}$ / SD$_\text{noLoRA}$) indicates how much variance the LoRA adds beyond random base-model variation.
-
-\bigskip
-
-\begin{table}[H]
-\centering
-\footnotesize
-\caption{Between-agent (LoRA) vs.\ between-run (no-LoRA) standard-deviation ratios on Gemma 3n E4B-it. Risk composite SD ratio averages 1.35 across probes; cf.\ the analogous 2.44 reported for Qwen3-8B in the main text.}
-\label{tab:supp_s5_gemma_nolora}
-\setlength{\tabcolsep}{6pt}
-\begin{tabular}{@{}llcccc@{}}
-\toprule
-Probe & Measure & M(noLoRA) & SD(noLoRA) & SD(LoRA) & SD ratio \\
-\midrule
-Supportive Therapist & Risk composite & .0225 & .0086 & .0088 & 1.03 \\
-                     & Absolutist     & .0176 & .0077 & .0074 & 0.96 \\
-Friend in Crisis     & Risk composite & .0274 & .0062 & .0101 & 1.64 \\
-                     & Absolutist     & .0186 & .0057 & .0091 & 1.60 \\
-Rejecting Peer       & Risk composite & .0224 & .0082 & .0081 & 0.99 \\
-                     & Absolutist     & .0175 & .0072 & .0074 & 1.02 \\
-Demanding Authority  & Risk composite & .0220 & .0055 & .0097 & 1.76 \\
-                     & Absolutist     & .0175 & .0043 & .0076 & 1.79 \\
-Neutral Acquaintance & Risk composite & .0197 & .0056 & .0073 & 1.31 \\
-                     & Absolutist     & .0150 & .0037 & .0058 & 1.59 \\
-\midrule
-\multicolumn{2}{l}{\textit{Mean SD ratio (risk composite)}}    & & & & \textbf{1.35} \\
-\multicolumn{2}{l}{\textit{Mean SD ratio (absolutist)}}        & & & & \textbf{1.39} \\
-\multicolumn{2}{l}{\textit{Qwen3-8B benchmark (risk composite)}} & & & & \textbf{2.44} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\noindent\textit{Note.} The no-LoRA condition is 20 independent runs of the base Gemma model (identical prompts, identical generation parameters; only the random sampling differs). The LoRA condition is the 64 per-person agents reported in the main paper. A ratio of 1.0 means the LoRA contributes no more between-agent variation than random sampling of the base model would; a ratio of 2.44 was reported for Qwen3-8B in the main text. On Gemma 3n, the ratio is consistently positive (mean 1.35 for risk composite, 1.39 for absolutist), but substantially smaller than under Qwen. The adapter is being applied, but Gemma's chat/safety post-training compresses what individual style can be expressed.
 
 \end{document}
